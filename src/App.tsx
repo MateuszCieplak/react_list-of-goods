@@ -24,7 +24,6 @@ enum SortType {
 type ReorderOptions = {
   sortType: SortType;
   isReversed: boolean;
-  isActive: boolean;
 };
 
 // Use this function in the render method to prepare goods
@@ -60,19 +59,17 @@ export function getReorderedGoods(
 //   sortType: SortType,
 // };
 
-export class App extends React.Component<ReorderOptions> {
+export class App extends React.Component<{}, ReorderOptions> {
   state = {
     isReversed: false,
     sortType: SortType.NONE,
-    isActive: false,
   };
 
   render() {
-    const { isReversed, sortType, isActive } = this.state;
+    const { isReversed, sortType } = this.state;
     const goodsList = getReorderedGoods(goodsFromServer, {
       isReversed,
       sortType,
-      isActive,
     });
 
     return (
@@ -104,11 +101,10 @@ export class App extends React.Component<ReorderOptions> {
 
           <button
             type="button"
-            className={`button is-warning ${isActive === true ? '' : 'is-light'}`}
+            className={`button is-warning ${isReversed ? '' : 'is-light'}`}
             onClick={() =>
               this.setState({
                 isReversed: !isReversed,
-                isActive: !isActive,
               })
             }
           >
@@ -124,7 +120,6 @@ export class App extends React.Component<ReorderOptions> {
                 this.setState({
                   isReversed: false,
                   sortType: SortType.NONE,
-                  isActive: false,
                 })
               }
             >
@@ -134,8 +129,8 @@ export class App extends React.Component<ReorderOptions> {
         </div>
 
         <ul>
-          {goodsList.map((good, index) => (
-            <li key={index + 1} data-cy="Good">
+          {goodsList.map(good => (
+            <li key={good} data-cy="Good">
               {good}
             </li>
           ))}
